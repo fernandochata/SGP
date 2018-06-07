@@ -13,12 +13,29 @@ CREATE TABLE PERMISO_RESOLUCIONES (
     ruta_documento VARCHAR2(255),
     CONSTRAINT RESOLUCION_PK PRIMARY KEY (id_resolucion)
 );
+
+--CREATE TABLE PERMISO_RESOLUCIONES (
+--    id_resolucion NUMBER (9,0),
+--    codigo VARCHAR2(100),
+--    detalle VARCHAR2(255),
+--    documento BLOB,
+--    CONSTRAINT RESOLUCION_PK PRIMARY KEY (id_resolucion)
+--);
+
 CREATE TABLE PERMISO_ADJUNTOS (
     id_adjunto NUMBER (9,0),
     nombre_documento VARCHAR2(100),
     ruta_documento VARCHAR2(255),
     CONSTRAINT ADJUNTO_PK PRIMARY KEY (id_adjunto)
 );
+
+--CREATE TABLE PERMISO_ADJUNTOS (
+--    id_adjunto NUMBER (9,0),
+--    nombre_documento VARCHAR2(100),
+--    documento BLOB,
+--    CONSTRAINT ADJUNTO_PK PRIMARY KEY (id_adjunto)
+--);
+
 CREATE TABLE PERMISO_ESTADOS (
     id_estado NUMBER (9,0),
     estado VARCHAR2(25),
