@@ -72,7 +72,7 @@ public class ValidarPermisoAdministrativo extends HttpServlet {
                             permiso.setUsuario(usuario.getRut());
                             permiso.setAdjunto(0);
                             permiso.setResolucion(0);
-                            permiso.setEstado(2);
+                            permiso.setEstado(1);
                             permiso.setTipo(1);
                             permiso.setMotivo(2);
                             

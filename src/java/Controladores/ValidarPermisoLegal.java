@@ -10,7 +10,6 @@ import DAO.UsuarioDAO;
 import DTO.PermisoDTO;
 import DTO.UsuarioDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,8 +75,8 @@ public class ValidarPermisoLegal extends HttpServlet {
                             permiso.setUsuario(usuario.getRut());
                             permiso.setAdjunto(0);
                             permiso.setResolucion(0);
-                            permiso.setEstado(2);
-                            permiso.setTipo(1);
+                            permiso.setEstado(1);
+                            permiso.setTipo(3);
                             permiso.setMotivo(2);
                             
                             PermisoDAO permisoDAO = new PermisoDAO();

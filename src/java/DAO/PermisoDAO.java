@@ -2,7 +2,6 @@ package DAO;
 
 import Conexion.Conexion;
 import DTO.PermisoDTO;
-//import DTO.PermisoVistaFuncionarioDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +22,8 @@ public class PermisoDAO {
     private static final String SQL_READ = "SELECT * FROM PERMISOS WHERE ID_PERMISO = ?";
     private static final String SQL_READALL = "SELECT * FROM PERMISOS";
     
-    private static final String SQL_READALL_RUT = "SELECT * FROM PERMISOS WHERE USUARIO = ?";
+    private static final String SQL_READALL_RUT = "SELECT * FROM PERMISOS WHERE USUARIO=?";
+    private static final String SQL_READALL_ESTADO = "SELECT * FROM PERMISOS WHERE ESTADO=?";
     private static final String SQL_READALL_DEPARTAMENTO = "SELECT P.ID_PERMISO, P.FECHA_CREACION, P.FECHA_DESDE, P.FECHA_HASTA, P.DIAS, P.USUARIO, P.RESOLUCION, P.ADJUNTO, P.ESTADO, P.TIPO, P.MOTIVO FROM PERMISOS P INNER JOIN USUARIOS U ON U.RUT = P.USUARIO WHERE U.DEPARTAMENTO = ?";
     private static final String SQL_READALL_ESTADO_DEPARTAMENTO = "SELECT P.ID_PERMISO, P.FECHA_CREACION, P.FECHA_DESDE, P.FECHA_HASTA, P.DIAS, P.USUARIO, P.RESOLUCION, P.ADJUNTO, P.ESTADO, P.TIPO, P.MOTIVO FROM PERMISOS P INNER JOIN USUARIOS U ON U.RUT = P.USUARIO WHERE P.ESTADO = ? AND U.DEPARTAMENTO = ?";
 
@@ -123,6 +123,24 @@ public class PermisoDAO {
         try {
             listado = new ArrayList<>();            
             ps = con.getCnn().prepareStatement(SQL_READALL_RUT);
+            ps.setString(1, key.toString());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                listado.add(new PermisoDTO(rs.getInt(1), rs.getDate(2), rs.getDate(3), rs.getDate(4), rs.getInt(5) , rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11)));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PermisoDTO.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            con.cerrarConexion();
+        }
+        return listado;
+    }
+    
+    public ArrayList<PermisoDTO> readAll_Estado(Object key) {
+        ArrayList<PermisoDTO> listado = null;
+        try {
+            listado = new ArrayList<>();            
+            ps = con.getCnn().prepareStatement(SQL_READALL_ESTADO);
             ps.setString(1, key.toString());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

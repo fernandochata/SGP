@@ -8,71 +8,52 @@ package Controladores;
 import DAO.UsuarioDAO;
 import DTO.UsuarioDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author SGP
- */
 @WebServlet(name = "ValidarIngreso", urlPatterns = {"/ValidarIngreso"})
 public class ValidarIngreso extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
         try {
             request.getSession().setAttribute("mensajeError", null);
 
-            //RECOJO NOMBRE Y CLAVE INGRESADAS
             String rutUsuario = request.getParameter("rutUsuario");
             String claveUsuario = request.getParameter("claveUsuario");
 
-            //SE CREA UN OBJETO TIPO USUARIO PARA GUARDAR LOS DATOS COMPLETOS DEL USUARIO
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             UsuarioDTO usuarioDTO = usuarioDAO.read(rutUsuario);
 
-            if(usuarioDTO == null)
-            {   //INGRESA ACÁ SI USUARIO NO SE ENCONTRÓ EN LA BBDD
+            if(usuarioDTO == null){
                 String mensajeError = "Usuario no existe en la base de datos";
-                
                 request.getSession().setAttribute("mensajeError", mensajeError);
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }else{
                 if(claveUsuario.compareTo(usuarioDTO.getClave()) != 0){
-                    //INGRESA ACÁ SI CLAVE NO ES CORRECTA
                     String mensajeError = "Clave incorrecta, intentelo nuevamente";
-
                     request.getSession().setAttribute("mensajeError", mensajeError);
                     request.getRequestDispatcher("index.jsp").forward(request, response);
                 }else{
-                    //INGRESA ACÁ SI LA CLAVE ES LA CORRECTA
-
                     request.getSession().setAttribute("usuario", usuarioDTO);
-
                     switch (usuarioDTO.getPerfil()) {
-                        //case 1:  request.getRequestDispatcher("MenuAdministrador").forward(request, response);
+                        //case 1:
+                        //    request.getRequestDispatcher("MenuAdministrador").forward(request, response);
                         //    break;
-                        case 2:  request.getRequestDispatcher("MenuFuncionario").forward(request, response);
+                        case 2:
+                            request.getRequestDispatcher("MenuFuncionario").forward(request, response);
                             break;
-                        case 3:  request.getRequestDispatcher("MenuInterno").forward(request, response);
+                        case 3:
+                            request.getRequestDispatcher("MenuInterno").forward(request, response);
                             break;
-                        case 4:  request.getRequestDispatcher("MenuSuperior").forward(request, response);
+                        case 4:
+                            request.getRequestDispatcher("MenuSuperior").forward(request, response);
                             break;
-                        case 5:  request.getRequestDispatcher("MenuAlcalde").forward(request, response);
+                        case 5:
+                            request.getRequestDispatcher("MenuAlcalde").forward(request, response);
                             break;
                     }
                 }
@@ -81,7 +62,6 @@ public class ValidarIngreso extends HttpServlet {
             request.getSession().setAttribute("mensajeError", ex.getMessage());
             request.getRequestDispatcher("index.jsp").forward(request, response);
         }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

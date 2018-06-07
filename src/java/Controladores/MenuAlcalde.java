@@ -1,49 +1,42 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controladores;
 
+import DAO.PermisoDAO;
+import DTO.PermisoDTO;
+import DTO.UsuarioDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author SGP
- */
 @WebServlet(name = "MenuAlcalde", urlPatterns = {"/MenuAlcalde"})
 public class MenuAlcalde extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet MenuAlcalde</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet MenuAlcalde at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        
+        
+        UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuario");
+        
+        ArrayList<PermisoDTO> permisosEmitidos = new ArrayList<PermisoDTO>();
+        permisosEmitidos = new PermisoDAO().readAll_Estado(1);
+        request.getSession().setAttribute("permisosEmitidos", permisosEmitidos);
+        
+        ArrayList<PermisoDTO> permisosEnProceso = new ArrayList<PermisoDTO>();
+        permisosEnProceso = new PermisoDAO().readAll_Estado(2);
+        request.getSession().setAttribute("permisosEnProceso", permisosEnProceso);
+        
+        ArrayList<PermisoDTO> permisosAprobados = new ArrayList<PermisoDTO>();
+        permisosAprobados = new PermisoDAO().readAll_Estado(3);
+        request.getSession().setAttribute("permisosAprobados", permisosAprobados);
+        
+        ArrayList<PermisoDTO> permisosRechazados = new ArrayList<PermisoDTO>();
+        permisosRechazados = new PermisoDAO().readAll_Estado(4);
+        request.getSession().setAttribute("permisosRechazados", permisosRechazados);
+        
+        request.getRequestDispatcher("menuAlcalde.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

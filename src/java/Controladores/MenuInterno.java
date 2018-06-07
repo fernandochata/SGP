@@ -1,15 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controladores;
 
 import DAO.PermisoDAO;
 import DTO.PermisoDTO;
 import DTO.UsuarioDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,10 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Fernando Chata
- */
 @WebServlet(name = "MenuInterno", urlPatterns = {"/MenuInterno"})
 public class MenuInterno extends HttpServlet {
 
@@ -34,7 +24,7 @@ public class MenuInterno extends HttpServlet {
         request.getSession().setAttribute("permisosDepartamento", permisosDepartamento);
         
         ArrayList<PermisoDTO> permisosEstadoDepartamento = new ArrayList<PermisoDTO>();
-        permisosEstadoDepartamento = new PermisoDAO().readAll_Estado_Departamento(2, usuarioDTO.getDepartamento());
+        permisosEstadoDepartamento = new PermisoDAO().readAll_Estado_Departamento(1, usuarioDTO.getDepartamento());
         request.getSession().setAttribute("permisosEstadoDepartamento", permisosEstadoDepartamento);
         
 

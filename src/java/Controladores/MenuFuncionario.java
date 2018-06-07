@@ -11,23 +11,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Fernando Chata
- */
 @WebServlet(name = "MenuFuncionario", urlPatterns = {"/MenuFuncionario"})
 public class MenuFuncionario extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try{
+            UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuario");
 
-        UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuario");
+            ArrayList<PermisoDTO> listaPermisos = new ArrayList<PermisoDTO>();
+            listaPermisos = new PermisoDAO().readAll_Rut(usuarioDTO.getRut());
+            request.getSession().setAttribute("listaPermisos", listaPermisos);
+
+            request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
+        } catch (IOException | ServletException ex) {
+            request.getRequestDispatcher("CerrarSesion").forward(request, response);
+        }
+
         
-        ArrayList<PermisoDTO> listaPermisos = new ArrayList<PermisoDTO>();
-        listaPermisos = new PermisoDAO().readAll_Rut(usuarioDTO.getRut());
-        request.getSession().setAttribute("listaPermisos", listaPermisos);
-        
-        request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
