@@ -1,12 +1,6 @@
-<%-- 
-    Document   : cambiarClave
-    Created on : 07-06-2018, 9:46:57
-    Author     : Fernando
---%>
 <%@page import="DAO.*"%>
 <%@page import="DTO.*"%>
-<%@page import="java.util.ArrayList"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="java.util.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -15,120 +9,129 @@
         <link rel="shortcut icon" type="image/x-icon" href="imagenes/favicon.ico">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js" ></script>
+        <script type="text/javascript" src="js/jquery.dataTables.js" ></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js" ></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js" ></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js" ></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js" ></script>
+        <script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js" ></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.6/js/dataTables.select.min.js" ></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" ></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js" ></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js" ></script>
+        <script type="text/javascript" src="js/popper.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
         
-        <title>SGP</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css"/>
+
+        <title>Sistema de Gestión de Permisos</title>
 
         <style>
-            html, body{height:100%;width:100%;}
-
-            /* Estilo Modal */
-            .modal {display: none;position: fixed;z-index: 1;padding-top: 100px;left: 0;top: 0;overflow: auto;background-color: rgb(0,0,0);background-color: rgba(0,0,0,0.4);}
-            .modal-content {background-color: #fefefe;margin: auto;padding: 20px;border: 1px solid #888;width: 80%;} 
+            html, body{height:100%; width:100%;}
+            #tabs .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active { border-bottom: 4px solid !important; }
+            
+            .body-block{
+                background:rgb(20, 122, 75);
+                background:-webkit-linear-gradient(to bottom,rgb(8, 100, 20),rgb(255, 255, 255));
+                background:linear-gradient(to bottom,rgb(8, 100, 20),rgb(255, 255, 255));
+                width:100%;height:100%;
+               }
+            .container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}
         </style>
-    </head>
+    </head> <!-- HEAD -->
     <body>
-<section>
+        <section>
             <%
-            ArrayList<PermisoDTO> listaPermisos = (ArrayList<PermisoDTO>)request.getSession().getAttribute("listaPermisos");
-            
-            UsuarioDTO usuario = (UsuarioDTO)request.getSession().getAttribute("usuario");
-            
-            UsuarioPerfilDAO usuarioPerfilDAO = new UsuarioPerfilDAO();
-            UsuarioDepartamentoDAO usuarioDepartamentoDAO = new UsuarioDepartamentoDAO();
-            UsuarioCargoDAO usuarioCargoDAO = new UsuarioCargoDAO();
-            
-            PermisoEstadoDAO permisoEstadoDAO = new PermisoEstadoDAO();
-            PermisoMotivoDAO permisoMotivoDAO = new PermisoMotivoDAO();
-            PermisoResolucionDAO permisoResolucionDAO = new PermisoResolucionDAO();
-            PermisoTipoDAO permisoTipoDAO = new PermisoTipoDAO();
+                String mensajeError = (String)request.getSession().getAttribute("mensajeError");
+                request.getSession().setAttribute("mensajeError", null);
+                UsuarioDTO usuario = (UsuarioDTO)request.getSession().getAttribute("usuarioDTO");
             %>
-        </section>
-        
-        <!-- INICIO HEADER -->
+        </section> <!-- CARGAR DATOS -->
+        <section>
+            <% if(mensajeError != null){ %>
+            <div class="modal" id="modalMensaje" tabindex="-1"  role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="false">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">SGP</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p><%=mensajeError %></p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+        </section> <!-- MODAL -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand"><img class="d-block img-fluid" src="imagenes/LogoMunicipalidad-small.png" height="40" width="40" alt="logo municipalidad"></a>
+            <a class="navbar-brand" href="#"><img class="d-block img-fluid" src="imagenes/LogoMunicipalidad-small.png" height="40" width="40" alt="logo municipalidad"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link">Bienvenido(a) <%=usuario.getNombres() %> <%= usuario.getApellido_paterno() %> <%=usuario.getApellido_materno()%> <span class="sr-only"></span></a>
+                    <li class="nav-item">
+                        <a class="nav-link">Bienvenido(a) <%=usuario.getNombres() %> <%= usuario.getApellido_paterno() %> <%=usuario.getApellido_materno()%></a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="perfil.jsp">Ver Perfil</a>
-                        <a class="dropdown-item" href="cambiarClave.jsp">Cambiar Contraseña</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="CerrarSesion">Cerrar Sesion</a>
-                    </div>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Opciones
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="verPerfil.jsp">Ver Perfil</a>
+                            <a class="dropdown-item" href="cambiarClave.jsp">Cambiar Contraseña</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesión</a>
+                        </div>
                     </li>
                 </ul>
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-                <a href="CerrarSesion">Cerrar Sesion</a>
-                </button>
+                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesión</a>
             </div>
-        </nav>
-        <!-- FIN HEADER -->
+        </nav> <!-- HEADER -->
 
-        <!-- Inicio Ventana Modal MENSAJE -->
-        <% if(request.getSession().getAttribute("mensajeError") != null){ %>
-        <div id="modalMensaje" class="modal">
-            <div class="modal-content">
-                <p><c:out value="${sessionScope.mensajeError}" /></p>
-            </div>
-        </div>
-        <script>
-            var modal = document.getElementById('modalMensaje');
-            modal.style.display = "block";
-            window.onclick = function(event) { if (event.target == modal) { modal.style.display = "none"; } }
-        </script>
-        <% } %>
-        <!-- Final Ventana Modal MENSAJE -->
-        <form>
+        <section class="body-block"><br>
             <div class="container">
-                <div class="row">
-                    <div class="col-md-10" >
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                              <h3 class="panel-title"><%=usuario.getNombres() %> <%=usuario.getApellido_paterno() %> <%=usuario.getApellido_materno() %></h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class=" col-md-9 col-lg-9 "> 
-                                    <table class="table table-user-information">
-                                        <tbody>
-                                        <tr>
-                                            <td>Ingrese Clave actual: </td>
-                                            <td><input type="password" name="" value="" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Ingrese clave nueva</td>
-                                            <td><input type="password" name="" value="" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Repita clave</td>
-                                            <td><input type="password" name="" value="" /></td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><a href="javascript:history.back()" class="btn btn-primary">Regresar</a></td>
-                                            <td><input type="submit" value="" /></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row-fluid">
+                    <form action="ModificarClave" method="POST"><br>
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <th style="font-size:25px; text-align: center" scope="col" colspan="2">
+                                    <%=usuario.getNombres() %> <%=usuario.getApellido_paterno() %> <%=usuario.getApellido_materno() %>
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Ingrese Clave actual: </td>
+                                    <td><input required class="form-control" type="password" name="claveActual" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Ingrese clave nueva</td>
+                                    <td><input required class="form-control" type="password" name="claveNueva1" /></td>
+                                </tr>
+                                <tr>
+                                    <td>Repita clave</td>
+                                    <td><input required class="form-control" type="password" name="claveNueva2" /></td>
+                                </tr>
+                                <tr>
+                                    <td style=" text-align: center"><a href="Regresar" class="btn btn-primary">Regresar</a></td>
+                                    <td style=" text-align: center"><button type="submit" class="btn btn-success">Cambiar</button></td>
+                                </tr>
+                            </tbody>
+                        </table><br>
+                    </form>
                 </div>
             </div>
-        </form>
-        
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>    
-    </body>
+        </section>
+
+       <script type="text/javascript">$('#modalMensaje').modal('show');</script>
+       </body>
 </html>
