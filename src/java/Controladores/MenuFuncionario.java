@@ -1,8 +1,7 @@
 package Controladores;
 
-import DAO.PermisoDAO;
-import DTO.PermisoDTO;
-import DTO.UsuarioDTO;
+import DAO.*;
+import DTO.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -17,18 +16,21 @@ public class MenuFuncionario extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try{
-            UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuario");
-
-            ArrayList<PermisoDTO> listaPermisos = new ArrayList<PermisoDTO>();
-            listaPermisos = new PermisoDAO().readAll_Rut(usuarioDTO.getRut());
-            request.getSession().setAttribute("listaPermisos", listaPermisos);
-
-            request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
-        } catch (IOException | ServletException ex) {
+            if((UsuarioDTO)request.getSession().getAttribute("usuarioDTO") != null){
+                UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuarioDTO");
+                ArrayList<PermisoDTO> listaPermisos = new ArrayList<>();
+                listaPermisos = new PermisoDAO().readAll_Rut(usuarioDTO.getRut());
+                request.getSession().setAttribute("listaPermisos", listaPermisos);
+                request.getSession().setAttribute("usuarioDTO", usuarioDTO);
+                request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
+            }else{
+                String mensajeError = "Error de autentificación. Vuelva a ingresar.";
+                request.getSession().setAttribute("mensajeError", mensajeError);
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+            }
+        } catch(NullPointerException ex) {
             request.getRequestDispatcher("CerrarSesion").forward(request, response);
         }
-
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

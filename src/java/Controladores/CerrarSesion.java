@@ -15,7 +15,24 @@ public class CerrarSesion extends HttpServlet {
             throws ServletException, IOException {
         
         request.getSession().setAttribute("mensajeError", null);
+        request.getSession().setAttribute("usuarioDTO", null);
+        request.getSession().setAttribute("listaPermisos", null);
         
+        request.getSession().setAttribute("permisosEmitidos", null);
+        request.getSession().setAttribute("permisosAprobados", null);
+        request.getSession().setAttribute("permisosRechazados", null);
+        request.getSession().setAttribute("permisosDesistidos", null);
+        
+        request.getSession().setAttribute("permisosDepartamento", null);
+        request.getSession().setAttribute("permisosEstadoDepartamento", null);
+        
+        request.getSession().setAttribute("id_permiso", null);
+        request.getSession().setAttribute("permisoDTO", null);
+        request.getSession().setAttribute("observacion", null);
+        request.getSession().setAttribute("boton", null);
+        
+        //String mensajeError = "Error inesperado.";
+        //request.getSession().setAttribute("mensajeError", mensajeError);
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 

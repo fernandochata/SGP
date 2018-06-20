@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controladores;
 
-import DAO.UsuarioDAO;
-import DTO.UsuarioDTO;
+import DAO.*;
+import DTO.*;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,48 +14,53 @@ public class ValidarIngreso extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            request.getSession().setAttribute("mensajeError", null);
-
-            String rutUsuario = request.getParameter("rutUsuario");
-            String claveUsuario = request.getParameter("claveUsuario");
-
+        try{
+            String rut = request.getParameter("rutUsuario");
+            String clave = request.getParameter("claveUsuario");
+            
             UsuarioDAO usuarioDAO = new UsuarioDAO();
-            UsuarioDTO usuarioDTO = usuarioDAO.read(rutUsuario);
-
-            if(usuarioDTO == null){
-                String mensajeError = "Usuario no existe en la base de datos";
+            UsuarioDTO usuarioDTO = usuarioDAO.read(rut);
+            
+            if(usuarioDTO == null){ // USUARIO NO SE ENCUENTRA EN LA BBDD
+                String mensajeError = "Usuario no existe en la base de datos, por favor vuelva a intentarlo.";
                 request.getSession().setAttribute("mensajeError", mensajeError);
                 request.getRequestDispatcher("index.jsp").forward(request, response);
-            }else{
-                if(claveUsuario.compareTo(usuarioDTO.getClave()) != 0){
-                    String mensajeError = "Clave incorrecta, intentelo nuevamente";
+            }else{ // USUARIO SI SE ENCONTRÓ EN LA BBDD
+                if(!clave.equals(usuarioDTO.getClave())){ // CLAVE INGRESADA NO ES LA MISMA ALMACENADA EN LA BBDD
+                    String mensajeError = "Clave incorrecta, inténtelo nuevamente.";
                     request.getSession().setAttribute("mensajeError", mensajeError);
                     request.getRequestDispatcher("index.jsp").forward(request, response);
-                }else{
-                    request.getSession().setAttribute("usuario", usuarioDTO);
+                }else{ // CLAVE CORRECTA
+                    request.getSession().setAttribute("usuarioDTO", usuarioDTO);
                     switch (usuarioDTO.getPerfil()) {
-                        //case 1:
-                        //    request.getRequestDispatcher("MenuAdministrador").forward(request, response);
-                        //    break;
-                        case 2:
+                        case 1: // ADMINISTRADOR
+                            String mensajeError = "El administrador debe conectarse mediante la aplicación de escritorio.";
+                            request.getSession().setAttribute("mensajeError", mensajeError);
+                            request.getRequestDispatcher("index.jsp").forward(request, response);
+                            break;
+                        case 2: // FUNCIONARIO
+                            request.getSession().setAttribute("mensajeError", null);
                             request.getRequestDispatcher("MenuFuncionario").forward(request, response);
                             break;
-                        case 3:
+                        case 3: // JEDE INTERNO
+                            request.getSession().setAttribute("mensajeError", null);
                             request.getRequestDispatcher("MenuInterno").forward(request, response);
                             break;
-                        case 4:
+                        case 4: // JEFE SUPERIOR
+                            request.getSession().setAttribute("mensajeError", null);
                             request.getRequestDispatcher("MenuSuperior").forward(request, response);
                             break;
-                        case 5:
+                        case 5: // ALCALDE
+                            request.getSession().setAttribute("mensajeError", null);
                             request.getRequestDispatcher("MenuAlcalde").forward(request, response);
                             break;
                     }
                 }
             }
-        }catch (IOException | ServletException ex) {
-            request.getSession().setAttribute("mensajeError", ex.getMessage());
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+        }catch(NullPointerException ex){
+            //String mensajeError = "Error inesperado. (ValidarIngreso) | " + ex.getMessage();
+            //request.getSession().setAttribute("mensajeError", mensajeError);
+            request.getRequestDispatcher("CerrarSesion").forward(request, response);
         }
     }
 

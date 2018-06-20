@@ -32,10 +32,16 @@ public class UsuarioPerfilDAO {
             while (rs.next()) {
                 usuarioCargo = new UsuarioPerfilDTO(rs.getInt(1), rs.getString(2), rs.getString(3));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioPerfilDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UsuarioPerfilDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return usuarioCargo;
     }
@@ -49,12 +55,17 @@ public class UsuarioPerfilDAO {
             while (rs.next()) {
                 listado.add(new UsuarioPerfilDTO(rs.getInt(1), rs.getString(2), rs.getString(3)));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioPerfilDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UsuarioPerfilDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listado;
     }
-    
 }

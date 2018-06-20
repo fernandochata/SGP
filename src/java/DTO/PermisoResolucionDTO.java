@@ -1,5 +1,7 @@
 package DTO;
 
+import java.util.Date;
+
 /**
  *
  * @author Fernando Chata
@@ -10,15 +12,17 @@ public class PermisoResolucionDTO {
     private String detalle;
     private String codigo;
     private String ruta_documento;
+    private Date fecha_creacion;
 
     public PermisoResolucionDTO() {
     }
 
-    public PermisoResolucionDTO(int id_resolucion, String detalle, String codigo, String ruta_documento) {
+    public PermisoResolucionDTO(int id_resolucion, String detalle, String codigo, String ruta_documento, Date fecha_creacion) {
         this.id_resolucion = id_resolucion;
         this.detalle = detalle;
         this.codigo = codigo;
         this.ruta_documento = ruta_documento;
+        this.fecha_creacion = fecha_creacion;
     }
 
     public int getId_resolucion() {
@@ -53,8 +57,18 @@ public class PermisoResolucionDTO {
         this.ruta_documento = ruta_documento;
     }
 
+    public Date getFecha_creacion() {
+        return fecha_creacion;
+    }
+
+    public void setFecha_creacion(Date fecha_creacion) {
+        this.fecha_creacion = fecha_creacion;
+    }
+
     @Override
     public String toString() {
-        return "PermisoResolucionDTO{" + "id_resolucion=" + id_resolucion + ", detalle=" + detalle + ", codigo=" + codigo + ", ruta_documento=" + ruta_documento + '}';
+        return "PermisoResolucionDTO{" + "id_resolucion=" + id_resolucion + ", detalle=" + detalle + ", codigo=" + codigo + ", ruta_documento=" + ruta_documento + ", fecha_creacion=" + fecha_creacion + '}';
     }
+
+    
 }

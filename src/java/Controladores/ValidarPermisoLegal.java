@@ -1,21 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controladores;
 
-import DAO.PermisoDAO;
-import DAO.UsuarioDAO;
-import DTO.PermisoDTO;
-import DTO.UsuarioDTO;
+import DAO.*;
+import DTO.*;
+import Funciones.Fechas;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author SGP
+ * @author Fernando Chata
  */
 @WebServlet(name = "ValidarPermisoLegal", urlPatterns = {"/ValidarPermisoLegal"})
 public class ValidarPermisoLegal extends HttpServlet {
@@ -32,85 +23,94 @@ public class ValidarPermisoLegal extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            // RECUPERAR INFORMACION DE SESION Y DE FORMULARIO DE INGRESO
+            UsuarioDTO usuario = (UsuarioDTO)request.getSession().getAttribute("usuarioDTO");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            
-            String mensajeError = "";
-            UsuarioDTO usuario = (UsuarioDTO)request.getSession().getAttribute("usuario");
-            
+            Date fechaSolicitud = new Date();
             Date fechaInicio = sdf.parse(request.getParameter("fechaInicio"));
             Date fechaFin = sdf.parse(request.getParameter("fechaFin"));
             String motivo = request.getParameter("motivo");
+
+            int diasDisponibles = usuario.getDd_administrativos();
+            int diasSolicitados = Fechas.workingDays(fechaInicio, fechaFin);
+            Date fechaMin = Fechas.addWorkingDays(fechaSolicitud, 5);
+            Date fechaMax = Fechas.addMonths(fechaSolicitud, 3);
             
-            int disponibles = usuario.getDd_legales();
-            int solicitados = diasHabiles(fechaInicio, fechaFin, feriadosChilenos());
-            
-            if(fechaInicio.before(new Date())){
-                mensajeError = "Fecha De incio anterior a hoy dia";
+            // FECHA DE INICIO NO PUEDE SER INFERIOR A 5 DIAS HABILES
+            // FECHA DE INICIO NO PUEDE SER SUPERIOR A 3 MESES
+            if(fechaInicio.before(fechaMin) || fechaInicio.after(fechaMax)){
+                String mensajeError = "La fecha de solicitud del permiso administrativo no puedo ser inferior a 5 dias hábiles, ni superior a 3 meses.";
                 request.getSession().setAttribute("mensajeError", mensajeError);
                 request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
             }else{
+                // FECHA DE INICIO NO PUEDE SER INFERIOR A LA FECHA DE FIN
                 if(fechaFin.before(fechaInicio)){
-                    mensajeError = "Fecha De fin no puede ser anterior a fecha de inicio";
+                    String mensajeError = "La fecha final del permiso no puede ser anterior a la fecha de inicio.";
                     request.getSession().setAttribute("mensajeError", mensajeError);
                     request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
                 }else{
-                    if(disponibles < solicitados){
-                        mensajeError = "No se cuentan con dias administrativos suficientes";
+                    // TOTAL DE DIAS HABILES DE PERMISO SOLICITADOS NO PUEDE SER MAYOR A LOS DIAS DIAS DISPONIBLES + DIAS DE PERMISOS PENDIENTES (EMITIDOS)
+                    if(diasDisponibles < diasSolicitados){
+                        String mensajeError = "No se cuentan con dias de permisos administrativos suficientes";
                         request.getSession().setAttribute("mensajeError", mensajeError);
                         request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
                     }else{
-                        if(motivo == null || motivo == ""){
-                            mensajeError = "debe ingresar un motivo";
+                        // MOTIVO ES UN CAMPO OBLIGATORIO
+                        if(motivo == null || motivo.equals("")){
+                            String mensajeError = "Se debe ingresar un motivo";
                             request.getSession().setAttribute("mensajeError", mensajeError);
                             request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
                         }else{
-                            request.getSession().setAttribute("mensajeError", null);
+                            // CREACION DE MOTIVO
+                            PermisoMotivoDAO permisoMotivoDAO = new PermisoMotivoDAO();
+                            PermisoMotivoDTO permisoMotivoDTO = new PermisoMotivoDTO();
+                            permisoMotivoDTO.setMotivo(motivo);
+                            permisoMotivoDAO.create(permisoMotivoDTO);
                             
                             PermisoDTO permiso = new PermisoDTO();
                             
-                            permiso.setFecha_creacion(new Date());
-                            permiso.setFecha_desde(sdf.parse(request.getParameter("fechaInicio")));
-                            permiso.setFecha_hasta(sdf.parse(request.getParameter("fechaFin")));
-                            permiso.setDias(diasHabiles(fechaInicio, fechaFin, feriadosChilenos()));
+                            permiso.setFecha_creacion(fechaSolicitud);
+                            permiso.setFecha_desde(fechaInicio);
+                            permiso.setFecha_hasta(fechaFin);
+                            permiso.setDias(diasSolicitados);
                             permiso.setUsuario(usuario.getRut());
-                            permiso.setAdjunto(0);
-                            permiso.setResolucion(0);
-                            permiso.setEstado(1);
-                            permiso.setTipo(3);
-                            permiso.setMotivo(2);
+                            permiso.setAdjunto(0); // SIN ARCHIVO ADJUNTO
+                            permiso.setResolucion(0); // SIN RESOLUCION
+                            permiso.setEstado(1); // ESTADO EMITIDO
+                            permiso.setTipo(3); //TIPO LEGAL
+                            permiso.setMotivo(permisoMotivoDAO.last().getId_motivo()); // ULTIMO NOTIVO INGRESADO
                             
                             PermisoDAO permisoDAO = new PermisoDAO();
                             
                             if(permisoDAO.create(permiso)){
                                 
-                                usuario.setDd_legales(usuario.getDd_legales() - solicitados);
+                                usuario.setDd_legales(usuario.getDd_legales() - diasSolicitados);
                                 UsuarioDAO usuarioDAO = new UsuarioDAO();
                                 
                                 if(usuarioDAO.update(usuario)){
-                                    mensajeError = "SE INGRESO PERMISO LEGAL";
+                                    String mensajeError = "SE INGRESO PERMISO LEGAL";
                                     request.getSession().setAttribute("mensajeError", mensajeError);
                                     request.getRequestDispatcher("MenuFuncionario").forward(request, response);
                                 }else{
-                                    mensajeError = "ERROR AL MODIFICAR USUARIO" + permiso.toString();
+                                    String mensajeError = "ERROR AL MODIFICAR USUARIO" + permiso.toString();
                                     request.getSession().setAttribute("mensajeError", mensajeError);
-                                    request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
+                                    request.getRequestDispatcher("MenuFuncionario").forward(request, response);
                                 }
                             }else{
-                                mensajeError = "ERROR AL MODIFICAR PERMISO" + permiso.toString();
+                                String mensajeError = "ERROR AL MODIFICAR PERMISO" + permiso.toString();
                                 request.getSession().setAttribute("mensajeError", mensajeError);
-                                request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
+                                request.getRequestDispatcher("MenuFuncionario").forward(request, response);
                             }
                         }
                     }
                 }
             }
-        } catch (ParseException ex) {
+        } catch (NullPointerException | IOException | ServletException | ParseException ex) {
             //ERROR AL PASEAR ALGUNA FECHA
-            String mensajeError = "Error en las fechas. " + ex.getMessage();
+            String mensajeError = "Se produjo un error inesperado. (ValidarPermisoLegal)" + ex.getMessage();
             request.getSession().setAttribute("mensajeError", mensajeError);
-            request.getRequestDispatcher("menuFuncionario.jsp").forward(request, response);
+            request.getRequestDispatcher("MenuFuncionario").forward(request, response);
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -152,62 +152,4 @@ public class ValidarPermisoLegal extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private int diasHabiles(Date fechaInicio, Date fechaFin, List<Date> listaFechasNoLaborables) {
-        int habiles = 0;
-        boolean diaHabil = false;
-        
-        Calendar fechaInicial = Calendar.getInstance();
-        fechaInicial.setTime(fechaInicio);
-
-        Calendar fechaFinal = Calendar.getInstance();
-        fechaFinal.setTime(fechaFin);
-        
-        while (fechaInicial.before(fechaFinal) || fechaInicial.equals(fechaFinal)) {
-            if (!listaFechasNoLaborables.isEmpty()) {
-                for (Date date : listaFechasNoLaborables) {
-                    Date fechaNoLaborablecalendar = fechaInicial.getTime();
-                    if (fechaInicial.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY && fechaInicial.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && !fechaNoLaborablecalendar.equals(date)) {
-                        diaHabil = true;
-                    } else {
-                        diaHabil = false;
-                        break;
-                    }
-                }
-            } else {
-                if (fechaInicial.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY && fechaInicial.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {
-                    habiles++;
-                }
-            }
-            if (diaHabil == true) {
-                habiles++;
-            }
-            fechaInicial.add(Calendar.DATE, 1);
-        }
-        return habiles;
-    }
-
-    private static List<Date> feriadosChilenos() throws ParseException {
-        
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        List<Date> lista = new ArrayList<>();
-        
-        lista.add(sdf.parse("01-01-2018"));
-        lista.add(sdf.parse("30-03-2018"));
-        lista.add(sdf.parse("31-03-2018"));
-        lista.add(sdf.parse("01-04-2018"));
-        lista.add(sdf.parse("21-04-2018"));
-        lista.add(sdf.parse("02-07-2018"));
-        lista.add(sdf.parse("16-07-2018"));
-        lista.add(sdf.parse("15-08-2018"));
-        lista.add(sdf.parse("17-09-2018"));
-        lista.add(sdf.parse("18-09-2018"));
-        lista.add(sdf.parse("19-09-2018"));
-        lista.add(sdf.parse("15-10-2018"));
-        lista.add(sdf.parse("01-11-2018"));
-        lista.add(sdf.parse("02-11-2018"));
-        lista.add(sdf.parse("08-12-2018"));
-        lista.add(sdf.parse("25-12-2018"));
-            
-        return lista;
-    }
 }

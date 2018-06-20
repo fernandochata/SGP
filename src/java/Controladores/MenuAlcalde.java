@@ -16,27 +16,26 @@ public class MenuAlcalde extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        
-        UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuario");
-        
-        ArrayList<PermisoDTO> permisosEmitidos = new ArrayList<PermisoDTO>();
-        permisosEmitidos = new PermisoDAO().readAll_Estado(1);
-        request.getSession().setAttribute("permisosEmitidos", permisosEmitidos);
-        
-        ArrayList<PermisoDTO> permisosEnProceso = new ArrayList<PermisoDTO>();
-        permisosEnProceso = new PermisoDAO().readAll_Estado(2);
-        request.getSession().setAttribute("permisosEnProceso", permisosEnProceso);
-        
-        ArrayList<PermisoDTO> permisosAprobados = new ArrayList<PermisoDTO>();
-        permisosAprobados = new PermisoDAO().readAll_Estado(3);
-        request.getSession().setAttribute("permisosAprobados", permisosAprobados);
-        
-        ArrayList<PermisoDTO> permisosRechazados = new ArrayList<PermisoDTO>();
-        permisosRechazados = new PermisoDAO().readAll_Estado(4);
-        request.getSession().setAttribute("permisosRechazados", permisosRechazados);
-        
-        request.getRequestDispatcher("menuAlcalde.jsp").forward(request, response);
+        try{
+            UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuarioDTO");
+            
+            ArrayList<PermisoDTO> permisosEmitidos = new PermisoDAO().readAll_Estado(1);
+            ArrayList<PermisoDTO> permisosAprobados = new PermisoDAO().readAll_Estado(2);
+            ArrayList<PermisoDTO> permisosRechazados = new PermisoDAO().readAll_Estado(3);
+            ArrayList<PermisoDTO> permisosDesistidos = new PermisoDAO().readAll_Estado(4);
+            
+            request.getSession().setAttribute("permisosEmitidos", permisosEmitidos);
+            request.getSession().setAttribute("permisosAprobados", permisosAprobados);
+            request.getSession().setAttribute("permisosRechazados", permisosRechazados);
+            request.getSession().setAttribute("permisosDesistidos", permisosDesistidos);
+            request.getSession().setAttribute("usuarioDTO", usuarioDTO);
+            request.getRequestDispatcher("menuAlcalde.jsp").forward(request, response);
+            
+        } catch(NullPointerException ex) {
+            String mensajeError = "Error inesperado (MenuAlcalde)" + ex.getMessage();
+            request.getSession().setAttribute("mensajeError", mensajeError);
+            request.getRequestDispatcher("CerrarSesion").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

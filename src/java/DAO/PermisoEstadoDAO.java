@@ -33,10 +33,16 @@ public class PermisoEstadoDAO {
             while (resultado.next()) {
                 permisoEstado = new PermisoEstadoDTO(resultado.getInt(1), resultado.getString(2), resultado.getString(3));
             }
+            ps.close();
         } catch (SQLException ex) {
             Logger.getLogger(PermisoEstadoDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(PermisoEstadoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return permisoEstado;
     }
@@ -50,10 +56,16 @@ public class PermisoEstadoDAO {
             while (rs.next()) {
                 listado.add(new PermisoEstadoDTO(rs.getInt(1), rs.getString(2), rs.getString(3)));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(PermisoEstadoDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(PermisoEstadoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listado;
     }

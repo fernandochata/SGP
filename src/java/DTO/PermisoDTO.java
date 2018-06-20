@@ -13,6 +13,7 @@ public class PermisoDTO {
     private Date fecha_desde;
     private Date fecha_hasta;
     private int dias;
+    private String observacion;
     private int usuario;
     private int resolucion;
     private int adjunto;
@@ -23,12 +24,13 @@ public class PermisoDTO {
     public PermisoDTO() {
     }
 
-    public PermisoDTO(int id_permiso, Date fecha_creacion, Date fecha_desde, Date fecha_hasta, int dias, int usuario, int resolucion, int adjunto, int estado, int tipo, int motivo) {
+    public PermisoDTO(int id_permiso, Date fecha_creacion, Date fecha_desde, Date fecha_hasta, int dias, String observacion, int usuario, int resolucion, int adjunto, int estado, int tipo, int motivo) {
         this.id_permiso = id_permiso;
         this.fecha_creacion = fecha_creacion;
         this.fecha_desde = fecha_desde;
         this.fecha_hasta = fecha_hasta;
         this.dias = dias;
+        this.observacion = observacion;
         this.usuario = usuario;
         this.resolucion = resolucion;
         this.adjunto = adjunto;
@@ -75,6 +77,14 @@ public class PermisoDTO {
 
     public void setDias(int dias) {
         this.dias = dias;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
     public int getUsuario() {
@@ -127,8 +137,9 @@ public class PermisoDTO {
 
     @Override
     public String toString() {
-        return "PermisoDTO{" + "id_permiso=" + id_permiso + ", fecha_creacion=" + fecha_creacion + ", fecha_desde=" + fecha_desde + ", fecha_hasta=" + fecha_hasta + ", dias=" + dias + ", usuario=" + usuario + ", resolucion=" + resolucion + ", adjunto=" + adjunto + ", estado=" + estado + ", tipo=" + tipo + ", motivo=" + motivo + '}';
+        return "PermisoDTO{" + "id_permiso=" + id_permiso + ", fecha_creacion=" + fecha_creacion + ", fecha_desde=" + fecha_desde + ", fecha_hasta=" + fecha_hasta + ", dias=" + dias + ", observacion=" + observacion + ", usuario=" + usuario + ", resolucion=" + resolucion + ", adjunto=" + adjunto + ", estado=" + estado + ", tipo=" + tipo + ", motivo=" + motivo + '}';
     }
 
+   
     
 }

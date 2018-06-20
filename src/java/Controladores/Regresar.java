@@ -1,49 +1,54 @@
 package Controladores;
 
-import DAO.PermisoDAO;
-import DTO.PermisoDTO;
 import DTO.UsuarioDTO;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "MenuInterno", urlPatterns = {"/MenuInterno"})
-public class MenuInterno extends HttpServlet {
+@WebServlet(name = "Regresar", urlPatterns = {"/Regresar"})
+public class Regresar extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try{
             UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuarioDTO");
             if(usuarioDTO != null){
-                // LISTADO PERMISOS EMITIDOS POR DEPARTAMENTO
-                ArrayList<PermisoDTO> permisosEstadoDepartamento = new ArrayList<PermisoDTO>();
-                permisosEstadoDepartamento = new PermisoDAO().readAll_Estado_Departamento(1, usuarioDTO.getDepartamento());
-                request.getSession().setAttribute("permisosEstadoDepartamento", permisosEstadoDepartamento);
-                
-                // LISTADO PERMISOS POR DEPARTAMENTO
-                ArrayList<PermisoDTO> permisosDepartamento = new ArrayList<PermisoDTO>();
-                permisosDepartamento = new PermisoDAO().readAll_Departamento(usuarioDTO.getDepartamento());
-                request.getSession().setAttribute("permisosDepartamento", permisosDepartamento);
-
-                
-
-                request.getSession().setAttribute("usuarioDTO", usuarioDTO);
-
-                request.getRequestDispatcher("menuInterno.jsp").forward(request, response);
+                switch (usuarioDTO.getPerfil()) {
+                    case 1: // ADMINISTRADOR
+                        String mensajeError = "El administrador debe conectarse mediante la aplicación de escritorio";
+                        request.getSession().setAttribute("mensajeError", mensajeError);
+                        request.getRequestDispatcher("index.jsp").forward(request, response);
+                        break;
+                    case 2: // FUNCIONARIO
+                        request.getSession().setAttribute("mensajeError", null);
+                        request.getRequestDispatcher("MenuFuncionario").forward(request, response);
+                        break;
+                    case 3: // JEDE INTERNO
+                        request.getSession().setAttribute("mensajeError", null);
+                        request.getRequestDispatcher("MenuInterno").forward(request, response);
+                        break;
+                    case 4: // JEFE SUPERIOR
+                        request.getSession().setAttribute("mensajeError", null);
+                        request.getRequestDispatcher("MenuSuperior").forward(request, response);
+                        break;
+                    case 5: // ALCALDE
+                        request.getSession().setAttribute("mensajeError", null);
+                        request.getRequestDispatcher("MenuAlcalde").forward(request, response);
+                        break;
+                }
             }else{
                 String mensajeError = "Error de autentificación. Vuelva a ingresar.";
                 request.getSession().setAttribute("mensajeError", mensajeError);
                 request.getRequestDispatcher("index.jsp").forward(request, response);
             }
-
-            
-            
-        } catch(NullPointerException ex) {
-            request.getRequestDispatcher("CerrarSesion").forward(request, response);
+        }catch(NullPointerException ex){
+        //String mensajeError = "Error inesperado. (ValidarIngreso) | " + ex.getMessage();
+        //request.getSession().setAttribute("mensajeError", mensajeError);
+        request.getRequestDispatcher("CerrarSesion").forward(request, response);
         }
     }
 

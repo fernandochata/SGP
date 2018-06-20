@@ -1,48 +1,40 @@
 package Controladores;
 
-import DAO.PermisoDAO;
-import DTO.PermisoDTO;
-import DTO.UsuarioDTO;
+import DAO.*;
+import DTO.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "MenuInterno", urlPatterns = {"/MenuInterno"})
-public class MenuInterno extends HttpServlet {
+@WebServlet(name = "VerificarResoluciones", urlPatterns = {"/VerificarResoluciones"})
+public class Verificar extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try{
-            UsuarioDTO usuarioDTO = (UsuarioDTO)request.getSession().getAttribute("usuarioDTO");
-            if(usuarioDTO != null){
-                // LISTADO PERMISOS EMITIDOS POR DEPARTAMENTO
-                ArrayList<PermisoDTO> permisosEstadoDepartamento = new ArrayList<PermisoDTO>();
-                permisosEstadoDepartamento = new PermisoDAO().readAll_Estado_Departamento(1, usuarioDTO.getDepartamento());
-                request.getSession().setAttribute("permisosEstadoDepartamento", permisosEstadoDepartamento);
-                
-                // LISTADO PERMISOS POR DEPARTAMENTO
-                ArrayList<PermisoDTO> permisosDepartamento = new ArrayList<PermisoDTO>();
-                permisosDepartamento = new PermisoDAO().readAll_Departamento(usuarioDTO.getDepartamento());
-                request.getSession().setAttribute("permisosDepartamento", permisosDepartamento);
-
-                
-
-                request.getSession().setAttribute("usuarioDTO", usuarioDTO);
-
-                request.getRequestDispatcher("menuInterno.jsp").forward(request, response);
-            }else{
-                String mensajeError = "Error de autentificación. Vuelva a ingresar.";
+            
+            int id_resolucion = Integer.parseInt(request.getParameter("codigoDocumento"));
+            PermisoResolucionDAO permisoResolucionDAO = new PermisoResolucionDAO();
+            PermisoResolucionDTO permisoResolucionDTO = permisoResolucionDAO.read(id_resolucion);
+            
+            if(permisoResolucionDTO != null){ // RESOLUCION EXISTE
+                String mensajeError = "Se encontró el decreto.";
                 request.getSession().setAttribute("mensajeError", mensajeError);
-                request.getRequestDispatcher("index.jsp").forward(request, response);
+                request.getSession().setAttribute("resolucion", permisoResolucionDTO);
+                request.getRequestDispatcher("verResolucion.jsp").forward(request, response);
+            }else{ // RESOLUCION NO EXISTE
+                String mensajeError = "No se encontró el decreto.";
+                request.getSession().setAttribute("mensajeError", mensajeError);
+                request.getSession().setAttribute("resolucion", permisoResolucionDTO);
+                request.getRequestDispatcher("RedirigirIngreso").forward(request, response);
             }
-
             
-            
-        } catch(NullPointerException ex) {
+            } catch(NullPointerException ex) {
+            String mensajeError = "Error inesperado. (Verificar) | " + ex.getMessage();
+            request.getSession().setAttribute("mensajeError", mensajeError);
             request.getRequestDispatcher("CerrarSesion").forward(request, response);
         }
     }

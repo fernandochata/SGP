@@ -1,7 +1,7 @@
 package Controladores;
 
-import DAO.PermisoDAO;
-import DTO.PermisoDTO;
+import DAO.*;
+import DTO.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,28 +12,30 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "AutorizarPermiso", urlPatterns = {"/AutorizarPermiso"})
 public class AutorizarPermiso extends HttpServlet {
-
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String mensajeError = "";
-        
-        String id_permiso = request.getParameter("id_permiso");
-        
-        PermisoDAO permisoDAO = new PermisoDAO();
-        PermisoDTO permisoDTO = permisoDAO.read(id_permiso);
-        permisoDTO.setEstado(2);
-        
-        if(permisoDAO.update(permisoDTO)){
-            mensajeError = "SE MODIFICO PERMISO";
-            request.getSession().setAttribute("mensajeError", mensajeError);
-            request.getRequestDispatcher("MenuInterno").forward(request, response);
-        }else{
-            mensajeError = "ERROR, NO SE PUDO MODIFICAR PERMISO";
-            request.getSession().setAttribute("mensajeError", mensajeError);
-            request.getRequestDispatcher("MenuInterno").forward(request, response);
+        try{
+            if(request.getParameter("id_permiso") != null){
+                String id_permiso = request.getParameter("id_permiso");
+                PermisoDAO permisoDAO = new PermisoDAO();
+                PermisoDTO permisoDTO = permisoDAO.read(id_permiso);
+                
+                if(permisoDTO != null){
+                    request.getSession().setAttribute("permisoDTO", permisoDTO);
+                    request.getRequestDispatcher("autorizarPermiso.jsp").forward(request, response);
+                }else{
+                    request.getRequestDispatcher("CerrarSesion").forward(request, response);
+                }
+            }else{
+                request.getRequestDispatcher("CerrarSesion").forward(request, response);
+                //String mensajeError = ". Vuelva a ingresar.";
+                //request.getSession().setAttribute("mensajeError", mensajeError);
+                //request.getRequestDispatcher("index.jsp").forward(request, response);
+            }
+        } catch(NullPointerException ex) {
+            request.getRequestDispatcher("CerrarSesion").forward(request, response);
         }
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

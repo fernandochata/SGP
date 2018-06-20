@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author SGP
- */
 public class FeriadoDAO {
     
     PreparedStatement ps;
@@ -24,32 +20,28 @@ public class FeriadoDAO {
     
     private static final Conexion con = Conexion.iniciarConexion();
     
-    /**
-     *
-     * @return
-     */
     public List<Date> read() {
         List<Date> lista = null;
-        //ArrayList<FeriadoDTO> listado = null;
-        
         try {
-            //listado = new ArrayList<>();            
+            lista = new ArrayList<Date>();
             ps = con.getCnn().prepareStatement(SQL_READ);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 lista.add(rs.getDate(1));
-                //listado.add(rs.getDate(1));
-                //listado.add(new FeriadoDTO(rs.getDate(1)));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(FeriadoDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FeriadoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return lista;
-        
     }
-    
     public ArrayList<FeriadoDTO> readAll() {
         ArrayList<FeriadoDTO> listado = null;
         try {
@@ -59,10 +51,16 @@ public class FeriadoDAO {
             while (rs.next()) {
                 listado.add(new FeriadoDTO(rs.getInt(1), rs.getDate(2), rs.getString(3)));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(FeriadoDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FeriadoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listado;
     }

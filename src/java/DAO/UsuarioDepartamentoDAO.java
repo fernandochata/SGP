@@ -32,10 +32,16 @@ public class UsuarioDepartamentoDAO {
             while (rs.next()) {
                 usuarioDepartamento = new UsuarioDepartamentoDTO(rs.getInt(1), rs.getString(2), rs.getString(3));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDepartamentoDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UsuarioDepartamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return usuarioDepartamento;
     }
@@ -49,12 +55,17 @@ public class UsuarioDepartamentoDAO {
             while (rs.next()) {
                 listado.add(new UsuarioDepartamentoDTO(rs.getInt(1), rs.getString(2), rs.getString(3)));
             }
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDepartamentoDTO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UsuarioDepartamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return listado;
     }
-    
 }
