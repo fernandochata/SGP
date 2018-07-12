@@ -19,8 +19,8 @@
             html, body{height:100%; width:100%;}
             .login-block{
                 background:rgb(20, 122, 75);
-                background:-webkit-linear-gradient(to bottom,rgb(8, 100, 20),rgb(255, 255, 255));
-                background:linear-gradient(to bottom,rgb(8, 100, 20),rgb(255, 255, 255));
+                background:-webkit-linear-gradient(to bottom,rgb(255, 255, 255),rgb(8, 100, 20));
+                background:linear-gradient(to bottom,rgb(255, 255, 255),rgb(8, 100, 20));
                 float:left;width:100%;height:100%;display:flex;flex-direction: column; justify-content: center;}
             .container{background:#fff; border-radius: 10px; box-shadow:15px 20px 0px rgba(0,0,0,0.1);}
             .banner-horizontal{ display: flex; justify-content: center;}

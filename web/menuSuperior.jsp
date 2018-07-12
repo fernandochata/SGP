@@ -105,11 +105,11 @@
                             <a class="dropdown-item" href="verPerfil.jsp">Ver Perfil</a>
                             <a class="dropdown-item" href="cambiarClave.jsp">Cambiar Contraseña</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesión</a>
+                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesion</a>
                         </div>
                     </li>
                 </ul>
-                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesión</a>
+                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesion</a>
             </div>
         </nav> <!-- HEADER -->
         <section class="body-block" id="tabs">
@@ -119,13 +119,13 @@
                     <div class="col-xs-12 "><br>
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="btn btn-success nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Consultar Permisos</a>
-                            <a class="btn btn-success nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Consultar Decretos</a>
-                            <a class="btn btn-success nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Verificar Decreto</a>
+                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Consultar Permisos</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Consultar Decretos</a>
+                            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Verificar Decreto</a>
                         </div>
                     </nav>
                         <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
-                            <div class="tab-pane table-responsive fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                 <div>
                                     <table id="tabla-permisos" class="table table-striped table-bordered">
                                         <thead>
@@ -158,7 +158,7 @@
                                     </table><br>
                                 </div>
                             </div>     
-                            <div class="tab-pane table-responsive fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                 <div >
                                     <table id="tabla-resoluciones" class="table table-striped table-bordered">
                                         <thead>
@@ -235,7 +235,7 @@
                 $('#tabla-resoluciones').DataTable( {
                     dom: 'Bfrtip',
                     buttons: [
-                        'pdf', 'excel', 'print'
+                        'pdf', 'print'
                     ]
                 } );
             } );

@@ -108,11 +108,11 @@
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="Regresar">Regresar</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesión</a>
+                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesion</a>
                         </div>
                     </li>
                 </ul>
-                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesión</a>
+                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesion</a>
             </div>
         </nav> <!-- HEADER -->
         

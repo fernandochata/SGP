@@ -100,7 +100,7 @@
                         </div>
                     </li>
                 </ul>
-                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesión</a>
+                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesion</a>
             </div>
         </nav> <!-- HEADER -->
         <section class="body-block" id="tabs">
@@ -111,14 +111,14 @@
                     <div class="col-xs-12 ">
                         <nav>
                             <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                <a class="btn btn-success nav-item nav-link active" id="nav-autorizar-tab" data-toggle="tab" href="#nav-autorizar" role="tab" aria-controls="nav-autorizar" aria-selected="true">Autorizar Permisos</a>
-                                <a class="btn btn-success nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Consultar Permisos</a>
-                                <a class="btn btn-success nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Verificar Decreto</a>
+                                <a class="nav-item nav-link active" id="nav-autorizar-tab" data-toggle="tab" href="#nav-autorizar" role="tab" aria-controls="nav-autorizar" aria-selected="true">Autorizar Permisos</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Consultar Permisos</a>
+                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Verificar Decreto</a>
                             </div>
                         </nav>
                         <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-autorizar" role="tabpanel" aria-labelledby="nav-autorizar-tab">
-                                <div class="table-responsive">
+                                <div>
                                     <div class="tab-pane" >
                                         <table id="tabla-autorizar" class="table table-striped table-bordered">
                                             <thead>
@@ -156,7 +156,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane table-responsive fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                 <table id="tabla-consultar" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
@@ -212,7 +212,12 @@
         </section>
         <script type="text/javascript">
             $(document).ready( function () {
-                $('#tabla-autorizar').DataTable();
+                $('#tabla-autorizar').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'pdf', 'print'
+                    ]
+                });
             } );
             
             $(document).ready( function () {

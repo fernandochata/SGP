@@ -107,17 +107,17 @@
                             <a class="dropdown-item" href="verPerfil.jsp">Ver Perfil</a>
                             <a class="dropdown-item" href="cambiarClave.jsp">Cambiar Contraseña</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesión</a>
+                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesion</a>
                         </div>
                     </li>
                 </ul>
-                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesión</a>
+                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesion</a>
             </div>
         </nav> <!-- HEADER -->
         
         <section class="body-block" id="tabs"><br>
             <div class="container">
-                <div class="row-fluid table-responsive">
+                <div class="row-fluid">
 
                                   <br>
                                         <form name="formModificarPermiso" action="ActualizarPermiso" method="POST">

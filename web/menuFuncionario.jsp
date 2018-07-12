@@ -25,7 +25,7 @@
         <script type="text/javascript" src="js/popper.min.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         
-        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css"/>
 
@@ -101,11 +101,11 @@
                             <a class="dropdown-item" href="verPerfil.jsp">Ver Perfil</a>
                             <a class="dropdown-item" href="cambiarClave.jsp">Cambiar Contraseña</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesión</a>
+                            <a class="dropdown-item" href="CerrarSesion">Cerrar Sesion</a>
                         </div>
                     </li>
                 </ul>
-                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesión</a>
+                <a class="btn btn-secondary" href="CerrarSesion">Cerrar Sesion</a>
             </div>
         </nav> <!-- HEADER -->
         <section class="body-block" id="tabs">
@@ -123,9 +123,9 @@
                         </nav>
                         <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                <div class="table-responsive">
+                                <div>
                                     <div class="tab-pane" id="nav-consultar table-responsive col-md-10 col-lg-10 " >
-                                        <table id="tabla-permisos" class="table table-striped toogle-circle-filled">
+                                        <table id="tabla-permisos">
                                             <thead>
                                                 <tr>
                                                     <th>SOLICITUD</th>
@@ -171,11 +171,11 @@
                                             </div>
                                             <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordion">
                                                 <div class="card-body">
-                                                    <div class="table-responsive">
-                                                        <div class=" tab-pane " id="nav-administrativo" >
+                                                    <div class="container">
+                                                        <div class="tab-pane " id="nav-administrativo" >
                                                             <!--   INICIO PERMISO ADMINISTRATIVO   -->
                                                             <form name="formAdministrativo" id="formAdministrativo"  action="ValidarPermisoAdministrativo" method="POST">
-                                                            <table class="table " >
+                                                            <table class="table">
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>Dias Disponibles:</td>
@@ -215,12 +215,12 @@
                                         <div class="card">
                                             <div class="card-header" id="headingTwo">
                                                 <h5 class="mb-0">
-                                                    <button class="btn btn-light collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Permiso por Fallecimiento</button>
+                                                    <button class="btn btn-light collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Permiso por Fallecimiento de Familiar Directo</button>
                                                 </h5>
                                             </div>
                                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                                 <div class="card-body">
-                                                    <div class="table-responsive">
+                                                    <div class="container">
                                                         <div class="tab-pane " id="nav-fallecimiento">
                                                             <!--   INICIO PERMISO FALLECIMIENTO   -->
                                                             <form name="formFallecimiento" id="formFallecimiento"  action="ValidarPermisoFallecimiento">
@@ -266,7 +266,7 @@
                                             </div>
                                             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                                                 <div class="card-body">
-                                                    <div class="table-responsive">
+                                                    <div class="container">
                                                         <div class="tab-pane" id="nav-legal">
                                                             <!--   INICIO PERMISO LEGAL   -->
                                                             <form name="formLegal" id="formLegal" action="ValidarPermisoLegal" method="POST">
@@ -315,7 +315,7 @@
                                             </div>
                                             <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
                                                 <div class="card-body">
-                                                    <div class="table-responsive">
+                                                    <div class="container">
                                                         <div class="tab-pane " id="nav-parental">
                                                             <!--   INICIO PERMISO PARENTAL   -->
                                                             <form name="formParental" id="formParental"  action="ValidarPermisoParental">
@@ -375,11 +375,7 @@
             </div>
         </section>
                                                                     
-        <script type="text/javascript">$(document).ready(function(){$('#tabla-permisos').DataTable( {
-    responsive: {
-        details: false
-    }
-} );});</script>                                                            
+        <script type="text/javascript">$(document).ready(function(){$('#tabla-permisos').DataTable();});</script>                                                            
         <script type="text/javascript">$('#modalMensaje').modal('show');</script>
     </body>
 </html>
