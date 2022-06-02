@@ -1,0 +1,25 @@
+### GET Uusers / licences
+GET http://localhost:4000/api/v1/users
+###
+GET  http://localhost:4000/api/v1/licences
+
+
+### GET user / licence
+GET http://localhost:4000/api/v1/users/629806696a3a1bbba45e58f2
+
+
+### POST user / licence
+POST http://localhost:4000/api/v1/users
+Content-Type: application/json
+
+{
+    "rut": "2204308-5",
+    "clave": "fernando",
+    "nombre": "Fernando Chata",
+    "direccion": "Santa Elena 540",
+    "telefono": 955204936,
+    "correo": "fernando.chata@gmail.com",
+    "perfil": "administrador",
+    "cargo": "administrador",
+    "departamento": "admin"
+}
